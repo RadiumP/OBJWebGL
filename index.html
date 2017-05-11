@@ -23,6 +23,7 @@
         <script src="3js/examples/js/loaders/WWOBJLoader2.js"></script>
         <script src="3js/examples/js/libs/dat.gui.min.js"></script>
         <script src="3js/examples/js/controls/OrbitControls.js"></script>
+        <script src="3js/examples/js/libs/stats.min.js"></script>
         
         <!--PHONG shaders-->
         <script id="phongvs" type="x-shader/x-vertex">
@@ -434,8 +435,20 @@
             //Instance
             var loading = new OBJRenderer(document.getElementById( 'scene' ));
             
+            
+            
+            //FPS
+            var container, stats;
+            container = document.createElement( 'div' );
+            document.body.appendChild( container );
+            stats = new Stats();
+            container.appendChild( stats.dom );
+            
+            
+            //looping
             var animate = function () {
                 requestAnimationFrame( animate );
+                stats.update();
                 loading.render();
             };
             
