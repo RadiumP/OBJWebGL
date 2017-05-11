@@ -235,6 +235,20 @@
                    return true;
                };
                
+               
+               OBJRenderer.prototype.matProc = function(){
+                   var scope = this;//CARE!!!
+                   var callbackMaterialsLoaded  = function (name,Buffer,material ) {
+				       
+                      
+                       
+				       return scope.mat;
+					};
+                   this.wwObjLoader2.registerCallbackMaterialsLoaded ( callbackMaterialsLoaded);
+                   
+                   return true;
+               }
+               
                OBJRenderer.prototype.createPivot = function(){
                    //init pivot for objloader2
                    this.pivot = new THREE.Object3D();
@@ -417,14 +431,22 @@
                    if(mode == 0) 
                    {
                        scope.mat = scope.phongMat;
-                       //scope.wwObjLoader2.run();
+                     
                    }
                    else if(mode == 1) {
                        scope.mat = scope.redMat;
-                       //scope.wwObjLoader2.run();
+                       scope.matProc();
                    }
                    //scope.postProc();
                    
+                   //Traverse the children to change material
+                    var selectedObject = scope.scene.getObjectByName('Pivot');
+                    var meshes = selectedObject.children;
+                       meshes.forEach(function(item){
+                           console.log(item);
+                           item.material = scope.mat ;
+                       });
+                       
                    
                };
                
@@ -480,22 +502,22 @@
             });
             
            //RENDERING MODE: FULL, AO, Phong
-//            var renderMode = folderOptions.add(uiCtrl, 'renderMode', {Full:0, AO:1, Phong: 2}).name('Render Mode');
-//            renderMode.onChange(function(value){
-//                if ( value == 0 ) {
-//					// framebuffer
-//                    loading.alterMode(0);
-//                    
-//                    
-//				} else if ( value == 1 ) {
-//					// onlyAO
-//                    loading.alterMode(1);
-//                   
-//				} else {
-//					console.error( "Not define renderModeChange type: " + value );
-//				}
-//                
-//            });
+            var renderMode = folderOptions.add(uiCtrl, 'renderMode', {Full:0, AO:1, Phong: 2}).name('Render Mode');
+            renderMode.onChange(function(value){
+                if ( value == 0 ) {
+					// framebuffer
+                    loading.alterMode(0);
+                    
+                    
+				} else if ( value == 1 ) {
+					// onlyAO
+                    loading.alterMode(1);
+                   
+				} else {
+					console.error( "Not define renderModeChange type: " + value );
+				}
+                
+            });
             
             //LOAD FILE/CLEAR SCENE
             if(loading.fileApiAvailable){
